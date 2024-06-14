@@ -24,9 +24,29 @@ def recommend(movie):
     return recommended_movie_names,recommended_movie_posters
 
 
+
+
+
+
+
 st.header('Movie Recommender System')
-movies = pickle.load(open('model/movie_list.pkl','rb'))
-similarity = pickle.load(open('model/similarity.pkl','rb'))
+movies = pickle.load(open('movie_list.pkl','rb'))
+
+
+
+similarity_url = "https://github.com/j-poddar/movie_recommendation_system/releases/download/large_pkl_file/similarity.pkl"
+
+response = requests.get(similarity_url, verify=False)
+with open("similarity_model.pkl", "wb") as f:
+    f.write(response.content)
+    
+
+with open("similarity_model.pkl", "rb") as f:
+    similarity = pickle.load(f)
+
+
+
+#similarity = pickle.load(open('similarity.pkl','rb'))
 
 movie_list = movies['title'].values
 selected_movie = st.selectbox(
@@ -36,7 +56,8 @@ selected_movie = st.selectbox(
 
 if st.button('Show Recommendation'):
     recommended_movie_names,recommended_movie_posters = recommend(selected_movie)
-    col1, col2, col3, col4, col5 = st.beta_columns(5)
+    #col1, col2, col3, col4, col5 = st.beta_columns(5)
+    col1, col2, col3, col4, col5 = st.columns(5)
     with col1:
         st.text(recommended_movie_names[0])
         st.image(recommended_movie_posters[0])
